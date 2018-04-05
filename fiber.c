@@ -89,13 +89,6 @@ int fiber_init() {
   return 0;
 }
 
-static void print_fcbs(fcb *fcbs) {
-  for (fcb *fcb = fcbs; fcb != NULL; fcb = fcb->next) {
-    printf("fid: %d left %d, ", fcb->fid, fcb->sleep_to - get_mill_timestamp());
-  }
-  printf("end\n");
-}
-
 void fiber_sched() {
   while (this_f_env->running_fcb != NULL || this_f_env->ready_fcbs != NULL ||
          this_f_env->sleeping_fcbs != NULL || this_f_env->freed_fcbs != NULL) {
@@ -113,7 +106,6 @@ void fiber_sched() {
     // check sleeping fibers. move to ready fcbs if timeout
     // also check if there're some timeouts
     // if no fiber timeouts, this thread goes to sleep too for min sleeping time
-    // print_fcbs(this_f_env->sleeping_fcbs);
     int has_timeout = 0;
     unsigned int min_sleeping_time = 0;
 
