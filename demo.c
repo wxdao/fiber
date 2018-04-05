@@ -27,6 +27,10 @@ void task4(void *arg) {
   for (int i = 0; i < 5; i++) {
     printf("y task4(%d)\n", i);
     fiber_yield();
+    if (i == 4) {
+      // trigger divide by zero exception
+      i /= (int)arg;
+    }
   }
 }
 
@@ -35,8 +39,8 @@ void task5(void *arg) {
     printf("y task5(%d)\n", i);
     fiber_yield();
     if (i == 1) {
-      // trigger divide by zero exception
-      i = i / (int)arg;
+      // trigger NULL memory access exception
+      *(int *)arg = 1;
     }
   }
 }
