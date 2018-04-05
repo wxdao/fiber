@@ -43,7 +43,7 @@ typedef struct {
   fcb *running_fcb;
   fcb *ready_fcbs;
   fcb *sleeping_fcbs;
-  fcb *freed_fcbs;
+  fcb *exited_fcbs;
 } f_env;
 
 // fiber entry

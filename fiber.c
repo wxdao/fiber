@@ -40,7 +40,7 @@ static void append_fcbs(fcb **fcbs_head, fcb *new_fcb) {
 // called on fiber returning
 static void fiber_exit() {
   // free
-  append_fcbs(&this_f_env->freed_fcbs, this_f_env->running_fcb);
+  append_fcbs(&this_f_env->exited_fcbs, this_f_env->running_fcb);
   this_f_env->running_fcb = NULL;
 
   _fiber_switch(this_f_env->sched_fcb->ctx, NULL);
@@ -91,16 +91,16 @@ int fiber_init() {
 
 void fiber_sched() {
   while (this_f_env->running_fcb != NULL || this_f_env->ready_fcbs != NULL ||
-         this_f_env->sleeping_fcbs != NULL || this_f_env->freed_fcbs != NULL) {
+         this_f_env->sleeping_fcbs != NULL || this_f_env->exited_fcbs != NULL) {
     // get current time
     unsigned int ts = get_mill_timestamp();
 
-    // cleanup freed fibers
-    fcb *freed_fcb = NULL;
-    while ((freed_fcb = this_f_env->freed_fcbs) != NULL) {
-      this_f_env->freed_fcbs = freed_fcb->next;
-      free(freed_fcb->stack_base);
-      free(freed_fcb);
+    // cleanup exited fibers
+    fcb *exited_fcb = NULL;
+    while ((exited_fcb = this_f_env->exited_fcbs) != NULL) {
+      this_f_env->exited_fcbs = exited_fcb->next;
+      free(exited_fcb->stack_base);
+      free(exited_fcb);
     }
 
     // check sleeping fibers. move to ready fcbs if timeout
