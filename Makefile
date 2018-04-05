@@ -5,7 +5,7 @@ SRCS = fiber.c demo.c
 OBJS = $(SRCS:.c=.o) asm.o
 
 CC = gcc
-CFLAGS = -std=c11 -Og -Wall
+CFLAGS = -std=c11 -Og -g -Wall
 LDFLAGS =
 
 .PHONY: build run $(TARGET) clean
