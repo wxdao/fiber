@@ -35,6 +35,7 @@ void task5(void *arg) {
     printf("y task5(%d)\n", i);
     fiber_yield();
     if (i == 1) {
+      // trigger divide by zero exception
       i = i / (int)arg;
     }
   }
