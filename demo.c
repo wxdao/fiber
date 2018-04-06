@@ -3,7 +3,7 @@
 #include "fiber.h"
 
 void task1(void *arg) {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 5; i++) {
     printf("s task1(%d)\n", i);
     fiber_sleep((int)arg);
   }

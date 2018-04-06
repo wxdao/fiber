@@ -63,7 +63,7 @@ void fiber_sched();
 // create a new fiber, returning fid or <0 on error
 int fiber_create(fentry entry, void *arg);
 
-// put current fiber to sleep for n ms
+// put current fiber to sleep for n mill sec
 void fiber_sleep(unsigned int n);
 
 // yield

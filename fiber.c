@@ -41,7 +41,6 @@ static void append_fcbs(fcb **fcbs_head, fcb *new_fcb) {
 static void fiber_exit() {
   // free
   append_fcbs(&this_f_env->exited_fcbs, this_f_env->running_fcb);
-  this_f_env->running_fcb = NULL;
 
   _fiber_switch(this_f_env->sched_fcb->ctx, NULL);
 }
@@ -92,6 +91,9 @@ int fiber_init() {
 void fiber_sched() {
   while (this_f_env->running_fcb != NULL || this_f_env->ready_fcbs != NULL ||
          this_f_env->sleeping_fcbs != NULL || this_f_env->exited_fcbs != NULL) {
+    // reset running fiber
+    this_f_env->running_fcb = NULL;
+
     // get current time
     unsigned int ts = get_mill_timestamp();
 
@@ -199,17 +201,18 @@ int fiber_create(fentry entry, void *arg) {
 }
 
 void fiber_sleep(unsigned int n) {
-  fcb *cur_fcb = this_f_env->running_fcb;
-  this_f_env->running_fcb = NULL;
-
-  cur_fcb->sleep_to = get_mill_timestamp() + n;
+  // set sleeping timeout
+  this_f_env->running_fcb->sleep_to = get_mill_timestamp() + n;
 
   // append to sleeping_fcbs
-  append_fcbs(&this_f_env->sleeping_fcbs, cur_fcb);
+  append_fcbs(&this_f_env->sleeping_fcbs, this_f_env->running_fcb);
 
-  _fiber_switch(this_f_env->sched_fcb->ctx, &cur_fcb->ctx);
+  _fiber_switch(this_f_env->sched_fcb->ctx, &this_f_env->running_fcb->ctx);
 }
 
 void fiber_yield() {
+  // append to ready_fcbs
+  append_fcbs(&this_f_env->ready_fcbs, this_f_env->running_fcb);
+
   _fiber_switch(this_f_env->sched_fcb->ctx, &this_f_env->running_fcb->ctx);
 }
