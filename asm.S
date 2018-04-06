@@ -1,7 +1,14 @@
     .text
     .align 4
+#ifdef __APPLE__
     .globl __fiber_switch
 __fiber_switch:
+#elif __linux__
+    .globl _fiber_switch
+_fiber_switch:
+#else
+#error only MacOS & Linux are supported
+#endif
     # save context on stack and set 2st arg %rsp
     push %r15
     push %r14
