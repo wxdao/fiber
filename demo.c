@@ -5,14 +5,14 @@
 void task1(void *arg) {
   for (int i = 0; i < 4; i++) {
     printf("s task1(%d)\n", i);
-    fiber_sleep(500);
+    fiber_sleep((int)arg);
   }
 }
 
 void task2(void *arg) {
   for (int i = 0; i < 2; i++) {
     printf("s task2(%d)\n", i);
-    fiber_sleep(2000);
+    fiber_sleep((int)arg);
   }
 }
 
@@ -48,10 +48,10 @@ void task5(void *arg) {
 int main() {
   fiber_init();
 
-  int f1 = fiber_create(task1, NULL);
+  int f1 = fiber_create(task1, (void *)500);
   printf("created task1 no. %d\n", f1);
 
-  int f2 = fiber_create(task2, NULL);
+  int f2 = fiber_create(task2, (void *)2000);
   printf("created task2 no. %d\n", f2);
 
   int f3 = fiber_create(task3, NULL);
